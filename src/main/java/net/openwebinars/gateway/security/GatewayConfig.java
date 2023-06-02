@@ -39,13 +39,18 @@ public class GatewayConfig {
     @Bean
     public RouteLocator routes(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("empleados", r -> r.path("/api/v1/**")
+                .route("compras", r -> r.path("/address/** | /client/** | /detail/** | /order/** | /status/**")
                         .filters(f -> f.filter(filter))
                         .uri("http://localhost:8080"))
 
                 .route("usuarios", r -> r.path("/auth/**")
                         .filters(f -> f.filter(filter))
                         .uri("http://localhost:8081"))
+                .route("almacen", r -> r.path("/stocks/** | /products/** | /suppliers/**")
+                        .filters(f -> f.filter(filter))
+                        .uri("http://localhost:8082"))
                 .build();
+
+
     }
 }
