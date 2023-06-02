@@ -1,6 +1,10 @@
 package net.openwebinars.gateway.security;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
+import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -12,7 +16,11 @@ import java.util.Collections;
 
 
 @Configuration
+//@EnableHystrix
 public class GatewayConfig {
+
+    @Autowired
+    AuthenticationFilter filter;
 
     @Bean
     public CorsWebFilter corsWebFilter() {
@@ -26,5 +34,18 @@ public class GatewayConfig {
         source.registerCorsConfiguration("/**", corsConfig);
 
         return new CorsWebFilter(source);
+    }
+
+    @Bean
+    public RouteLocator routes(RouteLocatorBuilder builder) {
+        return builder.routes()
+                .route("empleados", r -> r.path("/api/v1/**")
+                        .filters(f -> f.filter(filter))
+                        .uri("http://localhost:8080"))
+
+                .route("usuarios", r -> r.path("/auth/**")
+                        .filters(f -> f.filter(filter))
+                        .uri("http://localhost:8081"))
+                .build();
     }
 }
