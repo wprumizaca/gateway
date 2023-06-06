@@ -19,4 +19,21 @@ public class RouterValidator {
                     .stream()
                     .noneMatch(uri -> request.getURI().getPath().contains(uri));
 
+    // Nuevas líneas para validación de roles
+    public Predicate<ServerHttpRequest> hasRoleMaster =
+            request -> request.getHeaders().containsKey("role")
+                    && request.getHeaders().getFirst("role").equals("MASTER");
+
+    public Predicate<ServerHttpRequest> hasRoleAdminApp =
+            request -> request.getHeaders().containsKey("role")
+                    && request.getHeaders().getFirst("role").equals("ADMIN_APP");
+
+    public Predicate<ServerHttpRequest> hasRoleAdminUser =
+            request -> request.getHeaders().containsKey("role")
+                    && request.getHeaders().getFirst("role").equals("ADMIN_USER");
+
+    public Predicate<ServerHttpRequest> hasRoleClient =
+            request -> request.getHeaders().containsKey("role")
+                    && request.getHeaders().getFirst("role").equals("CLIENT");
+
 }
